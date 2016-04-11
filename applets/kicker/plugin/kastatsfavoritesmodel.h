@@ -20,13 +20,20 @@
 #ifndef FAVORITESMODEL_H
 #define FAVORITESMODEL_H
 
-#include "abstractmodel.h"
+#include "forwardingmodel.h"
 
 #include <QPointer>
 
 #include <KService>
+#include <KConfig>
 
-class FavoritesModel : public AbstractModel
+namespace KActivities {
+namespace Stats {
+    class ResultModel;
+} // namespace Stats
+} // namespace KActivities
+
+class KAStatsFavoritesModel : public ForwardingModel
 {
     Q_OBJECT
 
@@ -36,14 +43,14 @@ class FavoritesModel : public AbstractModel
     Q_PROPERTY(int dropPlaceholderIndex READ dropPlaceholderIndex WRITE setDropPlaceholderIndex NOTIFY dropPlaceholderIndexChanged)
 
     public:
-        explicit FavoritesModel(QObject *parent = 0);
-        ~FavoritesModel();
+        explicit KAStatsFavoritesModel(QObject *parent = 0);
+        ~KAStatsFavoritesModel();
 
         QString description() const;
 
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        // int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
         Q_INVOKABLE bool trigger(int row, const QString &actionId, const QVariant &argument);
 
@@ -79,13 +86,19 @@ class FavoritesModel : public AbstractModel
     private:
         AbstractEntry *favoriteFromId(const QString &id);
 
+        QString validateUrl(const QString &url, QString * scheme = nullptr) const;
+        QString agentForScheme(const QString &scheme) const;
+
         bool m_enabled;
 
-        QList<AbstractEntry *> m_entryList;
-        QStringList m_favorites;
+        // QList<AbstractEntry *> m_entryList;
+        mutable QHash<QString, AbstractEntry *> m_entries;
         int m_maxFavorites;
 
         int m_dropPlaceholderIndex;
+        KActivities::Stats::ResultModel *m_sourceModel;
+
+        KConfig m_config;
 };
 
 #endif

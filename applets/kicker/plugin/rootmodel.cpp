@@ -19,7 +19,7 @@
 
 #include "rootmodel.h"
 #include "actionlist.h"
-#include "favoritesmodel.h"
+#include "kastatsfavoritesmodel.h"
 #include "recentcontactsmodel.h"
 #include "recentusagemodel.h"
 #include "systemmodel.h"
@@ -61,7 +61,7 @@ AbstractModel *GroupEntry::childModel() const
 }
 
 RootModel::RootModel(QObject *parent) : AppsModel(QString(), parent)
-, m_favorites(new FavoritesModel(this))
+, m_favorites(new KAStatsFavoritesModel(this))
 , m_systemModel(nullptr)
 , m_showAllSubtree(false)
 , m_showRecentApps(true)

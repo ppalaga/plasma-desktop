@@ -22,7 +22,7 @@
 #include "appsmodel.h"
 #include "computermodel.h"
 #include "draghelper.h"
-#include "favoritesmodel.h"
+#include "simplefavoritesmodel.h"
 #include "dashboardwindow.h"
 #include "funnelmodel.h"
 #include "processrunner.h"
@@ -46,7 +46,7 @@ void KickerPlugin::registerTypes(const char *uri)
     qmlRegisterType<AppsModel>(uri, 0, 1, "AppsModel");
     qmlRegisterType<ComputerModel>(uri, 0, 1, "ComputerModel");
     qmlRegisterType<DragHelper>(uri, 0, 1, "DragHelper");
-    qmlRegisterType<FavoritesModel>(uri, 0, 1, "FavoritesModel");
+    qmlRegisterType<SimpleFavoritesModel>(uri, 0, 1, "FavoritesModel");
     qmlRegisterType<DashboardWindow>(uri, 0, 1, "DashboardWindow");
     qmlRegisterType<FunnelModel>(uri, 0, 1, "FunnelModel");
     qmlRegisterType<ProcessRunner>(uri, 0, 1, "ProcessRunner");

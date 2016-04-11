@@ -24,7 +24,8 @@ set(kickerplugin_SRCS
     plugin/contactentry.cpp
     plugin/containmentinterface.cpp
     plugin/draghelper.cpp
-    plugin/favoritesmodel.cpp
+    plugin/simplefavoritesmodel.cpp
+    plugin/kastatsfavoritesmodel.cpp
     plugin/fileentry.cpp
     plugin/forwardingmodel.cpp
     plugin/funnelmodel.cpp

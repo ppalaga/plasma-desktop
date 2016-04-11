@@ -22,7 +22,7 @@
 
 #include "appsmodel.h"
 
-class FavoritesModel;
+class KAStatsFavoritesModel;
 class RecentContactsModel;
 class RecentUsageModel;
 class SystemModel;
@@ -96,7 +96,7 @@ class RootModel : public AppsModel
     private:
         void extendEntryList();
 
-        FavoritesModel *m_favorites;
+        KAStatsFavoritesModel *m_favorites;
         SystemModel *m_systemModel;
 
         bool m_showAllSubtree;
