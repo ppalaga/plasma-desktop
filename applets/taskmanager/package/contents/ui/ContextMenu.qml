@@ -412,6 +412,65 @@ PlasmaComponents.ContextMenu {
     }
 
     PlasmaComponents.MenuItem {
+        id: showLauncherInActivitiesItem
+
+        text: i18n("&Show A Launcher When Not Running")
+
+        Connections {
+            target: activityInfo
+
+            onNumberOfRunningActivitiesChanged: activitiesDesktopsMenu.refresh()
+        }
+
+        PlasmaComponents.ContextMenu {
+            id: activitiesLaunchersMenu
+            visualParent: showLauncherInActivitiesItem.action
+
+            function refresh() {
+                clearMenuItems();
+
+                var createNewItem = function(title) {
+                    var result = menu.newMenuItem(activitiesLaunchersMenu);
+                    result.text = title;
+
+                    result.visible = true;
+                    result.checkable = true;
+                }
+
+                var url = menu.visualParent.m.LauncherUrlWithoutIcon;
+
+                var activities = tasksModel.launcherActivities(url);
+
+                var allActivities = createNewItem(i18n("On All Activities"));
+
+                if (activities.size > 0) {
+                    allActivities.checked = (activities[0] == "00000000-0000-0000-0000-000000000000");
+                }
+
+                if (activityInfo.numberOfRunningActivities <= 1) {
+                    return;
+                }
+
+                menu.newSeparator(activitiesLaunchersMenu);
+
+                var runningActivities = activityInfo.runningActivities();
+
+                for (var i = 0; i < runningActivities.length; ++i) {
+                    var id         = runningActivities[i];
+                    var name       = activityInfo.activityName(id);
+
+                    console.log("Activty: " + name);
+
+                    var item = createNewItem(name);
+                    item.checked = activities.includes(id);
+                }
+            }
+
+            Component.onCompleted: refresh()
+        }
+    }
+
+    PlasmaComponents.MenuItem {
         visible: (visualParent && visualParent.m.IsLauncher === true) && plasmoid.immutability !== PlasmaCore.Types.SystemImmutable
 
         text: i18n("Remove Launcher")
