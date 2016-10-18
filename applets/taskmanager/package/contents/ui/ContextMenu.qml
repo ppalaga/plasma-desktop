@@ -429,41 +429,65 @@ PlasmaComponents.ContextMenu {
             function refresh() {
                 clearMenuItems();
 
-                var createNewItem = function(title) {
+                var createNewItem = function(id, title, url, activities) {
                     var result = menu.newMenuItem(activitiesLaunchersMenu);
                     result.text = title;
 
                     result.visible = true;
                     result.checkable = true;
+
+                    result.checked = false;
+
+                    for (var j = 0; j < activities.length; ++j) {
+                        if (id == activities[j]) {
+                            result.checked = true;
+                            break;
+                        }
+                    }
+
+                    result.clicked.connect(
+                        function() {
+                            if (result.checked) {
+                                tasksModel.requestAddLauncherToActivity(url, id);
+                            } else {
+                                tasksModel.requestRemoveLauncherFromActivity(url, id);
+                            }
+                        }
+                    );
+
+                    return result;
                 }
 
-                var url = menu.visualParent.m.LauncherUrlWithoutIcon;
+                menu.onVisualParentChanged.connect(function() {
 
-                var activities = tasksModel.launcherActivities(url);
+                    if (menu.visualParent === null) return;
 
-                var allActivities = createNewItem(i18n("On All Activities"));
+                    var NULL_UUID = "00000000-0000-0000-0000-000000000000";
 
-                if (activities.size > 0) {
-                    allActivities.checked = (activities[0] == "00000000-0000-0000-0000-000000000000");
-                }
+                    var url = menu.visualParent.m.LauncherUrlWithoutIcon;
 
-                if (activityInfo.numberOfRunningActivities <= 1) {
-                    return;
-                }
+                    var activities = tasksModel.launcherActivities(url);
 
-                menu.newSeparator(activitiesLaunchersMenu);
+                    createNewItem(NULL_UUID, i18n("On All Activities"), url, activities);
 
-                var runningActivities = activityInfo.runningActivities();
+                    if (activityInfo.numberOfRunningActivities <= 1) {
+                        return;
+                    }
 
-                for (var i = 0; i < runningActivities.length; ++i) {
-                    var id         = runningActivities[i];
-                    var name       = activityInfo.activityName(id);
+                    createNewItem(activityInfo.currentActivity, i18n("On The Current Activity"), url, activities);
 
-                    console.log("Activty: " + name);
+                    menu.newSeparator(activitiesLaunchersMenu);
 
-                    var item = createNewItem(name);
-                    item.checked = activities.includes(id);
-                }
+                    var runningActivities = activityInfo.runningActivities();
+
+                    for (var i = 0; i < runningActivities.length; ++i) {
+                        var id         = runningActivities[i];
+                        var name       = activityInfo.activityName(id);
+
+                        var item = createNewItem(id, name, url, activities);
+                    }
+
+                });
             }
 
             Component.onCompleted: refresh()
