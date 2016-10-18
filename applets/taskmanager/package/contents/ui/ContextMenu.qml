@@ -44,7 +44,8 @@ PlasmaComponents.ContextMenu {
 
     onStatusChanged: {
         if (visualParent && visualParent.m.LauncherUrlWithoutIcon != null && status == PlasmaComponents.DialogStatus.Open) {
-            launcherToggleAction.checked = (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1);
+            activitiesDesktopsMenu.refresh();
+
         } else if (status == PlasmaComponents.DialogStatus.Closed) {
             menu.destroy();
         }
@@ -389,26 +390,6 @@ PlasmaComponents.ContextMenu {
         icon: "system-run"
 
         onClicked: tasksModel.requestNewInstance(visualParent.modelIndex())
-    }
-
-    PlasmaComponents.MenuItem {
-        id: launcherToggleAction
-
-        visible: (visualParent && visualParent.m.IsLauncher !== true && visualParent.m.IsStartup !== true) && plasmoid.immutability !== PlasmaCore.Types.SystemImmutable
-
-        enabled: visualParent && visualParent.m.LauncherUrlWithoutIcon != ""
-
-        checkable: true
-
-        text: i18n("&Show A Launcher When Not Running")
-
-        onClicked: {
-            if (tasksModel.launcherPosition(visualParent.m.LauncherUrlWithoutIcon) != -1) {
-                tasksModel.requestRemoveLauncher(visualParent.m.LauncherUrlWithoutIcon);
-            } else {
-                tasksModel.requestAddLauncher(visualParent.m.LauncherUrl);
-            }
-        }
     }
 
     PlasmaComponents.MenuItem {
